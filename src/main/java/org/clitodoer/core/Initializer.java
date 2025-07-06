@@ -10,20 +10,20 @@ import picocli.CommandLine;
 /**
  * @author : Pramod Khalkar
  * @since : 05/07/25, Sat
- **/
+ */
 public class Initializer {
-	public void run(String[] args) {
-		EventBus bus = new EventBus();
-		TodoRepository repo = new FileTodoRepository();
-		TodoService service = new TodoService(repo);
-		new TodoEventHandler(bus, service);
+  public void run(String[] args) {
+    EventBus bus = new EventBus();
+    TodoRepository repo = new FileTodoRepository();
+    TodoService service = new TodoService(repo);
+    new TodoEventHandler(bus, service);
 
-		CommandLine cmd = new CommandLine(new RootCommand());
-		cmd.addSubcommand("add", new AddCommand(bus));
-		cmd.addSubcommand("list", new ListCommand(bus));
-		cmd.addSubcommand("update", new UpdateCommand(bus));
-		cmd.addSubcommand("delete", new DeleteCommand(bus));
-		int exitCode = cmd.execute(args);
-		System.out.printf("Exit code %d\n", exitCode);
-	}
+    CommandLine cmd = new CommandLine(new RootCommand());
+    cmd.addSubcommand("add", new AddCommand(bus));
+    cmd.addSubcommand("list", new ListCommand(bus));
+    cmd.addSubcommand("update", new UpdateCommand(bus));
+    cmd.addSubcommand("delete", new DeleteCommand(bus));
+    int exitCode = cmd.execute(args);
+    System.out.printf("Exit code %d\n", exitCode);
+  }
 }

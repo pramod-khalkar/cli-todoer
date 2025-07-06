@@ -7,24 +7,28 @@ import picocli.CommandLine;
 /**
  * @author : Pramod Khalkar
  * @since : 05/07/25, Sat
- **/
+ */
 @CommandLine.Command(name = "delete", description = "Delete notes or sections")
 public class DeleteCommand implements Runnable {
 
-	@CommandLine.Option(names = "--sec", description = "Section ID")
-	String sectionId;
+  @CommandLine.Option(
+      names = {"--section", "-s"},
+      description = "Section ID")
+  String sectionId;
 
-	@CommandLine.Option(names = "--note", description = "Note ID")
-	Integer noteId;
+  @CommandLine.Option(
+      names = {"--note", "-n"},
+      description = "Note ID")
+  Integer noteId;
 
-	private EventBus eventBus;
+  private EventBus eventBus;
 
-	public DeleteCommand(EventBus eventBus) {
-		this.eventBus = eventBus;
-	}
+  public DeleteCommand(EventBus eventBus) {
+    this.eventBus = eventBus;
+  }
 
-	@Override
-	public void run() {
-		eventBus.publish(new DeleteTodoEvent(noteId, sectionId));
-	}
+  @Override
+  public void run() {
+    eventBus.publish(new DeleteTodoEvent(noteId, sectionId));
+  }
 }

@@ -1,6 +1,7 @@
 plugins {
     id("java")
-    id ("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.diffplug.spotless") version "7.0.4"
 }
 
 group = "org.cli-todoer"
@@ -29,9 +30,16 @@ tasks.test {
     useJUnitPlatform()
 }
 
-//compileJava {
-//    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
-//}
+spotless {
+    java {
+        googleJavaFormat("1.27.0")
+        target("src/**/*.java")
+    }
+}
+
+tasks.named("check") {
+    dependsOn("spotlessCheck")
+}
 
 // Generate version.properties file
 val generateVersionProperties by tasks.registering {
