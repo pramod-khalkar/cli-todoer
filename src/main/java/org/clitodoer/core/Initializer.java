@@ -18,7 +18,7 @@ public class Initializer {
     TodoServiceImpl service = new TodoServiceImpl(repo);
     new TodoEventHandler(bus, service);
 
-    CommandLine cmd = new CommandLine(new RootCommand());
+    CommandLine cmd = new CommandLine(new TodoCommand());
     cmd.addSubcommand("add", new AddCommand(bus));
     cmd.addSubcommand("list", new ListCommand(bus));
     cmd.addSubcommand("update", new UpdateCommand(bus));

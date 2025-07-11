@@ -12,7 +12,7 @@ import picocli.CommandLine;
     description = "CLI tool for managing todos",
     mixinStandardHelpOptions = true,
     versionProvider = VersionProvider.class)
-public class RootCommand implements Runnable {
+public class TodoCommand implements Runnable {
   @Override
   public void run() {
     System.out.println("Use a subcommand: add, list, delete, update");
