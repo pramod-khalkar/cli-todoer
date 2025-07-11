@@ -15,6 +15,11 @@ public class FileTodoRepository implements TodoRepository {
   FileManager fileManager = new FileManager();
 
   @Override
+  public void addSection(String section) {
+    fileManager.addSection(section);
+  }
+
+  @Override
   public void addNoteToSection(String section, String text) {
     fileManager.addNoteToSection(section, text);
   }

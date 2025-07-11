@@ -49,6 +49,19 @@ public final class FileManager {
     save();
   }
 
+  public void addSection(String section) {
+    if (fileData == null) {
+      fileData = new FileData();
+    }
+    if (fileData.getSections() == null) {
+      fileData.setSections(new ArrayList<>());
+    }
+    if (fileData.getSections().stream().noneMatch(sec -> section.equals(sec.getName()))) {
+      fileData.getSections().add(new FileData.Section(section, new ArrayList<>()));
+      save();
+    }
+  }
+
   public void addNoteToSection(String section, String note) {
     if (fileData == null) {
       fileData = new FileData();
@@ -74,7 +87,7 @@ public final class FileManager {
 
   public void deleteNoteFromSection(String section, int noteIndex) {
     if (fileData == null || fileData.getSections() == null) {
-      return; // No data to delete from
+      return;
     }
     FileData.Section targetSection =
         fileData.getSections().stream()
@@ -93,7 +106,7 @@ public final class FileManager {
 
   public void deleteSection(String section) {
     if (fileData == null || fileData.getSections() == null) {
-      return; // No data to delete from
+      return;
     }
     fileData.setSections(
         fileData.getSections().stream().filter(sec -> !section.equals(sec.getName())).toList());
@@ -106,7 +119,7 @@ public final class FileManager {
 
   public void updateNoteInSection(String section, int noteIndex, String newText) {
     if (fileData == null || fileData.getSections() == null) {
-      return; // No data to update
+      return;
     }
     FileData.Section targetSection =
         fileData.getSections().stream()
@@ -121,7 +134,7 @@ public final class FileManager {
 
   public void updateSection(String section, String newText) {
     if (fileData == null || fileData.getSections() == null) {
-      return; // No data to update
+      return;
     }
     FileData.Section targetSection =
         fileData.getSections().stream()
@@ -156,7 +169,6 @@ public final class FileManager {
     if (!Files.exists(filePath)) {
       throw new RuntimeException("Failed to initialize file storage: " + filePath);
     } else {
-      System.out.println("File storage initialized at: " + filePath);
       try {
         mapper.writeValue(
             Files.newBufferedWriter(filePath, StandardOpenOption.WRITE), this.fileData);
@@ -186,7 +198,6 @@ public final class FileManager {
     if (!Files.exists(filePath)) {
       throw new RuntimeException("Failed to initialize file storage: " + filePath);
     } else {
-      System.out.println("File storage initialized at: " + filePath);
       try {
         if (Files.size(filePath) == 0) {
           fileData = new FileData();

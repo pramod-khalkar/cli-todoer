@@ -14,11 +14,12 @@ public class ListCommand implements Runnable {
   @CommandLine.Option(
       names = {"--note", "-n"},
       description = "List only notes")
-  private boolean listNotes;
+  private boolean note;
 
   @CommandLine.Option(
       names = {"--section", "-s"},
-      description = "Section ID (optional)")
+      description = "Section ID (optional)",
+      arity = "0..1")
   private String section;
 
   private final EventBus eventBus;
@@ -29,6 +30,6 @@ public class ListCommand implements Runnable {
 
   @Override
   public void run() {
-    eventBus.publish(new ListTodoEvent(listNotes, section));
+    eventBus.publish(new ListTodoEvent(note, section));
   }
 }

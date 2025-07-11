@@ -32,13 +32,17 @@ tasks.test {
 
 spotless {
     java {
-        googleJavaFormat("1.27.0")
+        googleJavaFormat("1.28.0")
         target("src/**/*.java")
+    }
+    kotlin {
+        target("src/**/*.kt", "*.kts")
+        ktlint("1.2.1")
     }
 }
 
-tasks.named("check") {
-    dependsOn("spotlessCheck")
+tasks.named("build") {
+    dependsOn("spotlessApply", "shadowJar")
 }
 
 // Generate version.properties file

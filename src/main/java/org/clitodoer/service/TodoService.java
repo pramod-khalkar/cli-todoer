@@ -1,98 +1,29 @@
 package org.clitodoer.service;
 
-import java.util.List;
-import java.util.Map;
-import org.clitodoer.model.Note;
-import org.clitodoer.repository.TodoRepository;
-
 /**
  * @author : Pramod Khalkar
- * @since : 02/07/25, Wed
+ * @since : 11/07/25, Fri
  */
-public class TodoService {
-  private final TodoRepository repository;
+public interface TodoService {
+  void addSection(String section);
 
-  public TodoService(TodoRepository repository) {
-    this.repository = repository;
-  }
+  void addToSection(String section, String note);
 
-  // Add a todo to a section
-  public void addToSection(String section, String note) {
-    repository.addNoteToSection(section, note);
-  }
+  void addGlobal(String note);
 
-  // Add a global (unsectioned) todo
-  public void addGlobal(String note) {
-    repository.addGlobalNote(note);
-  }
+  void listSectionNotes(String section);
 
-  // List all sections and their notes
-  public void listAll() {
-    repository
-        .getAllSections()
-        .forEach(
-            (section, notes) -> {
-              System.out.println("Section: " + section);
-              notes.forEach(
-                  n -> {
-                    System.out.printf("Index : %d , Note : %s%n%n", n.getIndex(), n.getText());
-                  });
-            });
-  }
+  void listAllSectionNotes();
 
-  // List notes in a specific section
-  public void listSection(String section) {
-    List<Note> notes = repository.getNotesBySection(section);
-    if (notes == null || notes.isEmpty()) {
-      System.out.println("No notes in section " + section);
-    } else {
-      for (int i = 0; i < notes.size(); i++) {
-        System.out.println("[" + i + "] " + notes.get(i).getText());
-      }
-    }
-  }
+  void listAllSectionNotesWithoutSectionName();
 
-  public void listNotes() {
-    Map<String, List<Note>> allSections = repository.getAllSections();
-    if (allSections.isEmpty()) {
-      System.out.println("Notes not found.");
-    } else {
-      allSections.forEach(
-          (k, v) -> {
-            v.forEach(
-                n -> {
-                  System.out.printf(
-                      "Section: %s, Index: %d, Note: %s%n", k, n.getIndex(), n.getText());
-                });
-          });
-    }
-  }
+  void listSectionsWithoutNote();
 
-  // Delete note from section
-  public void deleteNoteInSection(String section, int noteIndex) {
-    repository.deleteNoteFromSection(section, noteIndex);
-  }
+  void updateNoteInSection(String section, Integer noteIndex, String noteText);
 
-  public void deleteGlobalNote(int noteIndex) {
-    repository.deleteNoteFromGlobalSection(noteIndex);
-  }
+  void updateGlobalNote(Integer noteIndex, String noteText);
 
-  // Delete entire section
-  public void deleteSection(String section) {
-    repository.deleteSection(section);
-  }
+  void deleteNoteInSection(String section, Integer noteIndex);
 
-  // Update note in section
-  public void updateNoteInSection(String section, int noteIndex, String updatedText) {
-    repository.updateNoteInSection(section, noteIndex, updatedText);
-  }
-
-  public void updateGlobalNote(int noteIndex, String updatedText) {
-    repository.updateNoteInGlobalSection(noteIndex, updatedText);
-  }
-
-  // Update section title or description (if needed)
-  public void updateSection(String section, String newText) {
-    repository.updateSection(section, newText);
-  }
+  void deleteGlobalNote(Integer noteIndex);
 }

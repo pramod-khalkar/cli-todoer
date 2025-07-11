@@ -11,7 +11,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "add", description = "Add a new note")
 public class AddCommand implements Runnable {
 
-  @CommandLine.Parameters(index = "0", description = "The note text")
+  @CommandLine.Parameters(index = "0", description = "The note text", arity = "0..1")
   private String note;
 
   @CommandLine.Option(

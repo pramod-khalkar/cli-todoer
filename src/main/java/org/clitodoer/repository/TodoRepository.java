@@ -9,6 +9,8 @@ import org.clitodoer.model.Note;
  * @since : 05/07/25, Sat
  */
 public interface TodoRepository {
+  void addSection(String section);
+
   void addNoteToSection(String section, String text);
 
   void addGlobalNote(String text);

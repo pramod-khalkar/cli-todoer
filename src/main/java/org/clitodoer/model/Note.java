@@ -22,15 +22,7 @@ public class Note {
   public Note(Integer index, String text) {
     this.index = index;
     this.text = text;
-    this.priority = 0; // Default priority
-    this.createdAt = Instant.now();
-    this.modifiedAt = Instant.now();
-  }
-
-  public Note(Integer index, String text, Integer priority) {
-    this.index = index;
-    this.text = text;
-    this.priority = priority;
+    this.priority = 0;
     this.createdAt = Instant.now();
     this.modifiedAt = Instant.now();
   }

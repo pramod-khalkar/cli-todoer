@@ -16,7 +16,6 @@ public class TodoEventHandler {
 
   public TodoEventHandler(EventBus bus, TodoService service) {
     this.service = service;
-
     bus.register(AddTodoEvent.class, this::handleAdd);
     bus.register(ListTodoEvent.class, this::handleList);
     bus.register(UpdateTodoEvent.class, this::handleUpdate);
@@ -24,8 +23,10 @@ public class TodoEventHandler {
   }
 
   void handleAdd(AddTodoEvent event) {
-    if (event.section != null) {
+    if (event.section != null && event.note != null) {
       service.addToSection(event.section, event.note);
+    } else if (event.section != null) {
+      service.addSection(event.section);
     } else {
       service.addGlobal(event.note);
     }
@@ -33,15 +34,12 @@ public class TodoEventHandler {
   }
 
   void handleList(ListTodoEvent event) {
-    if (event.section != null) {
-      // List notes in a specific section
-      service.listSection(event.section);
+    if (event.section != null && !event.section.isEmpty()) {
+      service.listSectionNotes(event.section);
     } else if (event.listNotes) {
-      // List all sections notes
-      service.listNotes();
+      service.listAllSectionNotesWithoutSectionName();
     } else {
-      // List all sections and their notes
-      service.listAll();
+      service.listAllSectionNotes();
     }
   }
 
