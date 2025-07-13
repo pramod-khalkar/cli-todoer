@@ -5,68 +5,73 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.clitodoer.model.Note;
-import org.clitodoer.storage.FileManager;
+import org.clitodoer.storage.*;
 
 /**
  * @author : Pramod Khalkar
  * @since : 02/07/25, Wed
  */
 public class FileTodoRepository implements TodoRepository {
-  FileManager fileManager = new FileManager();
+  private final Operation fileOperation;
+
+  public FileTodoRepository(Operation fileOperation) {
+    this.fileOperation = fileOperation;
+  }
 
   @Override
   public void addSection(String section) {
-    fileManager.addSection(section);
+    fileOperation.addSection(section);
   }
 
   @Override
   public void addNoteToSection(String section, String text) {
-    fileManager.addNoteToSection(section, text);
+    fileOperation.addNoteToSection(section, text);
   }
 
   @Override
   public void addGlobalNote(String text) {
-    fileManager.addGlobalNote(text);
+    fileOperation.addGlobalNote(text);
   }
 
   @Override
   public List<Note> getNotesBySection(String section) {
-    return fileManager.listNotes(section);
+    return fileOperation.listNotes(section);
   }
 
   @Override
   public Map<String, List<Note>> getAllSections() {
-    return fileManager.listAllSections().stream()
-        .collect(Collectors.toMap(Function.identity(), section -> fileManager.listNotes(section)));
+    return fileOperation.listAllSections().stream()
+        .collect(
+            Collectors.toMap(Function.identity(), section -> fileOperation.listNotes(section)));
   }
 
   @Override
   public void deleteNoteFromSection(String section, int noteIndex) {
-    fileManager.deleteNoteFromSection(section, noteIndex);
+    fileOperation.deleteNoteFromSection(section, noteIndex);
   }
 
   @Override
   public void deleteNoteFromGlobalSection(int noteIndex) {
-    fileManager.deleteNoteFromGlobalSection(noteIndex);
+    fileOperation.deleteNoteFromGlobalSection(noteIndex);
   }
 
   @Override
   public void deleteSection(String section) {
-    fileManager.deleteSection(section);
+    fileOperation.deleteSection(section);
   }
 
   @Override
   public void updateNoteInSection(String section, int noteIndex, String newText) {
-    fileManager.updateNoteInSection(section, noteIndex, newText);
+    fileOperation.updateNoteInSection(section, noteIndex, newText);
   }
 
   @Override
   public void updateNoteInGlobalSection(int noteIndex, String newText) {
-    fileManager.updateNoteInGlobalSection(noteIndex, newText);
+    fileOperation.updateNoteInGlobalSection(noteIndex, newText);
   }
 
   @Override
   public void updateSection(String section, String newText) {
-    fileManager.updateSection(section, newText);
+    fileOperation.updateSection(section, newText);
   }
 }

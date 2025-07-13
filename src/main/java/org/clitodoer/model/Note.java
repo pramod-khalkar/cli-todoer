@@ -3,6 +3,7 @@ package org.clitodoer.model;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"createdAt", "modifiedAt", "priority"})
 public class Note {
   private Integer index;
   private String text;

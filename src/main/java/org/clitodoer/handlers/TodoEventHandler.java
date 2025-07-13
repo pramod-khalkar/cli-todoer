@@ -53,10 +53,15 @@ public class TodoEventHandler {
   }
 
   void handleDelete(DeleteTodoEvent event) {
-    if (event.section != null) {
+    if (event.section != null && event.noteIndex != null) {
       service.deleteNoteInSection(event.section, event.noteIndex);
-    } else {
+    } else if (event.section != null) {
+      service.deleteSection(event.section);
+    } else if (event.noteIndex != null) {
       service.deleteGlobalNote(event.noteIndex);
+    } else {
+      System.out.println("❌ Error: Note index or section must be provided for deletion.");
+      return;
     }
     System.out.println("✔ Note deleted");
   }

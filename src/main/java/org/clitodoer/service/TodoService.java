@@ -26,4 +26,6 @@ public interface TodoService {
   void deleteNoteInSection(String section, Integer noteIndex);
 
   void deleteGlobalNote(Integer noteIndex);
+
+  void deleteSection(String section);
 }

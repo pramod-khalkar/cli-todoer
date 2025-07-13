@@ -19,7 +19,7 @@ public class DeleteCommand implements Runnable {
   @CommandLine.Option(
       names = {"--note", "-n"},
       description = "Note ID")
-  Integer noteId;
+  Integer noteIndex;
 
   private EventBus eventBus;
 
@@ -29,6 +29,6 @@ public class DeleteCommand implements Runnable {
 
   @Override
   public void run() {
-    eventBus.publish(new DeleteTodoEvent(noteId, sectionId));
+    eventBus.publish(new DeleteTodoEvent(noteIndex, sectionId));
   }
 }

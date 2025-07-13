@@ -1,6 +1,11 @@
 package org.clitodoer;
 
 import org.clitodoer.core.Initializer;
+import org.clitodoer.storage.DefaultFilePathProvider;
+import org.clitodoer.storage.FileManager;
+import org.clitodoer.storage.FileStorage;
+import org.clitodoer.storage.Operation;
+import picocli.CommandLine;
 
 /**
  * @author : Pramod Khalkar
@@ -8,6 +13,9 @@ import org.clitodoer.core.Initializer;
  */
 public class TodoLauncher {
   public static void main(String[] args) {
-    new Initializer().run(args);
+    Operation operation =
+        new FileManager(new FileStorage(new DefaultFilePathProvider().getFilePath()));
+    CommandLine cmd = new Initializer().withOperation(operation).build();
+    cmd.execute(args);
   }
 }

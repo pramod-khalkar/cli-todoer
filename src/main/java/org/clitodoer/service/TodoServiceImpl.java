@@ -80,6 +80,11 @@ public class TodoServiceImpl implements TodoService {
     repository.deleteNoteFromGlobalSection(noteIndex);
   }
 
+  @Override
+  public void deleteSection(String section) {
+    repository.deleteSection(section);
+  }
+
   private void printSection(String section, List<Note> notes) {
     if (section != null) {
       System.out.printf("%s %s\n", TRIANGULAR_BULLET, section);

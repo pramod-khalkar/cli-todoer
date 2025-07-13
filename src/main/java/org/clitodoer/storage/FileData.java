@@ -1,9 +1,11 @@
 package org.clitodoer.storage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.clitodoer.model.Note;
 
@@ -14,19 +16,30 @@ import org.clitodoer.model.Note;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class FileData {
-  private List<Section> sections;
+  private Set<Section> sections;
+
+  public void addOrUpdateSection(Section section) {
+    if (sections == null) {
+      sections = new LinkedHashSet<>();
+      sections.add(section);
+    } else {
+      sections.add(section);
+    }
+  }
 
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
+  @EqualsAndHashCode
   public static class Section {
     private String name;
-    private List<Note> notes;
+    private Set<Note> notes;
 
-    public void addNote(Note note) {
+    public void addOrUpdateNote(Note note) {
       if (notes == null) {
-        notes = new ArrayList<>();
+        notes = new LinkedHashSet<>();
         notes.add(note);
       } else {
         notes.add(note);
@@ -34,16 +47,23 @@ public class FileData {
     }
 
     public void removeNote(int index) {
-      if (notes != null && index >= 0 && index < notes.size()) {
-        notes.remove(index);
+      for (Note note : new LinkedHashSet<>(notes)) {
+        if (note.getIndex() == index) {
+          notes.remove(note);
+          break;
+        }
       }
     }
 
     public void updateNote(int index, String newText) {
-      if (notes != null && index >= 0 && index < notes.size()) {
-        Note note = notes.get(index);
-        note.setText(newText);
-        note.setModifiedAt(java.time.Instant.now());
+      for (Note note : new LinkedHashSet<>(notes)) {
+        if (note.getIndex() == index) {
+          notes.remove(note);
+          note.setText(newText);
+          note.setModifiedAt(Instant.now());
+          notes.add(note);
+          break;
+        }
       }
     }
   }
