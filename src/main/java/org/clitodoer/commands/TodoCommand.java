@@ -1,5 +1,6 @@
 package org.clitodoer.commands;
 
+import org.clitodoer.utils.Constant;
 import org.clitodoer.utils.VersionProvider;
 import picocli.CommandLine;
 
@@ -9,9 +10,11 @@ import picocli.CommandLine;
  */
 @CommandLine.Command(
     name = "todo",
-    description = "CLI tool for managing todos",
+    description = Constant.TODO_CMD_DESC,
     mixinStandardHelpOptions = true,
-    versionProvider = VersionProvider.class)
+    versionProvider = VersionProvider.class,
+    footerHeading = "%nExamples:%n%n",
+    footer = {Constant.TODO_EXAMPLES})
 public class TodoCommand implements Runnable {
   @Override
   public void run() {

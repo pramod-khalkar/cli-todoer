@@ -2,23 +2,24 @@ package org.clitodoer.commands;
 
 import org.clitodoer.core.EventBus;
 import org.clitodoer.events.ListTodoEvent;
+import org.clitodoer.utils.Constant;
 import picocli.CommandLine;
 
 /**
  * @author : Pramod Khalkar
  * @since : 05/07/25, Sat
  */
-@CommandLine.Command(name = "list", description = "List notes or sections")
+@CommandLine.Command(name = "list", description = Constant.LIST_CMD_DESC)
 public class ListCommand implements Runnable {
 
   @CommandLine.Option(
       names = {"--note", "-n"},
-      description = "List only notes")
+      description = Constant.NOTE_DESC)
   private boolean note;
 
   @CommandLine.Option(
       names = {"--section", "-s"},
-      description = "Section ID (optional)",
+      description = Constant.SECTION_DESC,
       arity = "0..1")
   private String section;
 
