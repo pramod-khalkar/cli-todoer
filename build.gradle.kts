@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.cli-todoer"
-version = "1.0-SNAPSHOT"
+version = "1.2.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
