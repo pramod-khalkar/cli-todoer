@@ -1,7 +1,9 @@
 plugins {
     id("java")
+    id("application")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "7.0.4"
+    id("org.graalvm.buildtools.native") version "0.10.6"
 }
 
 group = "org.cli-todoer"
@@ -53,6 +55,21 @@ spotless {
 
 tasks.named("build") {
     dependsOn("spotlessApply", "shadowJar")
+}
+tasks.named("nativeCompile") {
+    dependsOn("build")
+}
+application {
+    mainClass.set("org.clitodoer.TodoLauncher")
+}
+
+graalvmNative {
+    binaries {
+        named("main") {
+            imageName.set("cli-todoer")
+            buildArgs.add("--no-fallback")
+        }
+    }
 }
 
 // Generate version.properties file

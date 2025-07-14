@@ -5,4 +5,4 @@ if [ ! -f "$GEN_JAR_FILE" ]; then
   ./gradlew clean build
   ./gradlew shadowJar
 fi
-java -cp ./build/libs/cli-todoer-*-all.jar org.clitodoer.TodoLauncher "$@"
+java -jar ./build/libs/cli-todoer-*-all.jar "$@"
