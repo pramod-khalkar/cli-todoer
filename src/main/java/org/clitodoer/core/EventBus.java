@@ -1,29 +1,26 @@
 package org.clitodoer.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author : Pramod Khalkar
  * @since : 02/07/25, Wed
- **/
+ */
 public class EventBus {
-    private final Map<Class<?>, List<EventListener>> listeners = new HashMap<>();
+  private Map<Class<?>, List<Consumer<?>>> handlers = new HashMap<>();
 
-    public <T> void register(Class<T> eventType, EventListener<T> listener) {
-        listeners.computeIfAbsent(eventType, k -> new ArrayList<>()).add(listener);
-    }
+  public <T> void register(Class<T> eventType, Consumer<T> handler) {
+    handlers.computeIfAbsent(eventType, k -> new ArrayList<>()).add(handler);
+  }
 
-    public <T> void publish(T event) {
-        List<EventListener> registered = listeners.getOrDefault(event.getClass(), List.of());
-        for (EventListener listener : registered) {
-            listener.onEvent(event);
-        }
+  public <T> void publish(T event) {
+    List<Consumer<?>> consumers = handlers.getOrDefault(event.getClass(), Collections.emptyList());
+    for (Consumer<?> consumer : consumers) {
+      ((Consumer<T>) consumer).accept(event);
     }
+  }
 
-    public interface EventListener<T> {
-        void onEvent(T event);
-    }
+  public interface Consumer<T> {
+    void accept(T event);
+  }
 }

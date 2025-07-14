@@ -1,33 +1,31 @@
 package org.clitodoer.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.clitodoer.core.EventBus;
-import org.clitodoer.event.TodoAddedEvent;
-import org.clitodoer.command.AddTodoCommand;
-import org.clitodoer.repository.FileTodoRepository;
-
 /**
  * @author : Pramod Khalkar
- * @since : 02/07/25, Wed
- **/
+ * @since : 11/07/25, Fri
+ */
+public interface TodoService {
+  void addSection(String section);
 
-public class TodoService {
-    private final List<String> todos;
-    private final FileTodoRepository repository;
+  void addToSection(String section, String note);
 
-    public TodoService(EventBus eventBus, FileTodoRepository repo) {
-        this.repository = repo;
-        this.todos = new ArrayList<>(repo.loadTodos());
+  void addGlobal(String note);
 
-        eventBus.register(AddTodoCommand.class, event -> {
-            todos.add(event.getTask());
-            repo.saveTodo(event.getTask());
-            eventBus.publish(new TodoAddedEvent(event.getTask()));
-        });
-    }
+  void listSectionNotes(String section);
 
-    public List<String> getTodos() {
-        return todos;
-    }
+  void listAllSectionNotes();
+
+  void listAllSectionNotesWithoutSectionName();
+
+  void listSectionsWithoutNote();
+
+  void updateNoteInSection(String section, Integer noteIndex, String noteText);
+
+  void updateGlobalNote(Integer noteIndex, String noteText);
+
+  void deleteNoteInSection(String section, Integer noteIndex);
+
+  void deleteGlobalNote(Integer noteIndex);
+
+  void deleteSection(String section);
 }
