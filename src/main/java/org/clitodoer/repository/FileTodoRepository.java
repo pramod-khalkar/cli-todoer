@@ -1,39 +1,77 @@
 package org.clitodoer.repository;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.clitodoer.model.Note;
+import org.clitodoer.storage.*;
+
 /**
  * @author : Pramod Khalkar
  * @since : 02/07/25, Wed
- **/
-public class FileTodoRepository {
-    private static final String FILE_PATH = "todos.txt";
+ */
+public class FileTodoRepository implements TodoRepository {
+  private final Operation fileOperation;
 
-    public List<String> loadTodos() {
-        try {
-            Path path = Paths.get(FILE_PATH);
-            if (!Files.exists(path)) {
-                return new ArrayList<>();
-            }
-            return Files.readAllLines(path);
-        } catch (IOException e) {
-            System.err.println("Failed to read todos from file.");
-            return new ArrayList<>();
-        }
-    }
+  public FileTodoRepository(Operation fileOperation) {
+    this.fileOperation = fileOperation;
+  }
 
-    public void saveTodo(String task) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(task);
-            writer.newLine();
-        } catch (IOException e) {
-            System.err.println("Failed to write todo to file.");
-        }
-    }
+  @Override
+  public void addSection(String section) {
+    fileOperation.addSection(section);
+  }
+
+  @Override
+  public void addNoteToSection(String section, String text) {
+    fileOperation.addNoteToSection(section, text);
+  }
+
+  @Override
+  public void addGlobalNote(String text) {
+    fileOperation.addGlobalNote(text);
+  }
+
+  @Override
+  public List<Note> getNotesBySection(String section) {
+    return fileOperation.listNotes(section);
+  }
+
+  @Override
+  public Map<String, List<Note>> getAllSections() {
+    return fileOperation.listAllSections().stream()
+        .collect(
+            Collectors.toMap(Function.identity(), section -> fileOperation.listNotes(section)));
+  }
+
+  @Override
+  public void deleteNoteFromSection(String section, int noteIndex) {
+    fileOperation.deleteNoteFromSection(section, noteIndex);
+  }
+
+  @Override
+  public void deleteNoteFromGlobalSection(int noteIndex) {
+    fileOperation.deleteNoteFromGlobalSection(noteIndex);
+  }
+
+  @Override
+  public void deleteSection(String section) {
+    fileOperation.deleteSection(section);
+  }
+
+  @Override
+  public void updateNoteInSection(String section, int noteIndex, String newText) {
+    fileOperation.updateNoteInSection(section, noteIndex, newText);
+  }
+
+  @Override
+  public void updateNoteInGlobalSection(int noteIndex, String newText) {
+    fileOperation.updateNoteInGlobalSection(noteIndex, newText);
+  }
+
+  @Override
+  public void updateSection(String section, String newText) {
+    fileOperation.updateSection(section, newText);
+  }
 }
