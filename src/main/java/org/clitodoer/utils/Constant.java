@@ -38,5 +38,8 @@ public class Constant {
           todo delete --note 1,
           todo delete --section work
           """;
-  public static final String TICK_DESC = "Presence of this flag assume done else not done";
+  public static final String TICK_DESC =
+      "Presence of this flag means your are marking a note as done";
+  public static final String CROSS_DESC =
+      "Presence of this flag means your are marking a note as incomplete";
 }

@@ -45,9 +45,9 @@ public class TodoEventHandler {
 
   void handleUpdate(UpdateTodoEvent event) {
     if (event.section != null) {
-      service.updateNoteInSection(event.section, event.noteIndex, event.noteText, event.mark);
+      service.updateNoteInSection(event.section, event.noteIndex, event.noteText, event.noteStatus);
     } else {
-      service.updateGlobalNote(event.noteIndex, event.noteText, event.mark);
+      service.updateGlobalNote(event.noteIndex, event.noteText, event.noteStatus);
     }
     System.out.println("✔ Note updated");
   }

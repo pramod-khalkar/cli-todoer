@@ -2,6 +2,7 @@ package org.clitodoer.service;
 
 import java.util.List;
 import java.util.Map;
+import org.clitodoer.handlers.NoteStatus;
 import org.clitodoer.model.Note;
 import org.clitodoer.repository.TodoRepository;
 
@@ -62,13 +63,13 @@ public class TodoServiceImpl implements TodoService {
 
   @Override
   public void updateNoteInSection(
-      String section, Integer noteIndex, String updatedText, boolean markDone) {
-    repository.updateNoteInSection(section, noteIndex, updatedText, markDone);
+      String section, Integer noteIndex, String updatedText, NoteStatus noteStatus) {
+    repository.updateNoteInSection(section, noteIndex, updatedText, noteStatus);
   }
 
   @Override
-  public void updateGlobalNote(Integer noteIndex, String updatedText, boolean markDone) {
-    repository.updateNoteInGlobalSection(noteIndex, updatedText, markDone);
+  public void updateGlobalNote(Integer noteIndex, String updatedText, NoteStatus noteStatus) {
+    repository.updateNoteInGlobalSection(noteIndex, updatedText, noteStatus);
   }
 
   @Override

@@ -2,6 +2,7 @@ package org.clitodoer.repository;
 
 import java.util.List;
 import java.util.Map;
+import org.clitodoer.handlers.NoteStatus;
 import org.clitodoer.model.Note;
 
 /**
@@ -25,9 +26,9 @@ public interface TodoRepository {
 
   void deleteSection(String section);
 
-  void updateNoteInSection(String section, int noteIndex, String newText, boolean markDone);
+  void updateNoteInSection(String section, int noteIndex, String newText, NoteStatus noteStatus);
 
-  void updateNoteInGlobalSection(int noteIndex, String newText, boolean markDone);
+  void updateNoteInGlobalSection(int noteIndex, String newText, NoteStatus noteStatus);
 
   void updateSection(String section, String newText);
 

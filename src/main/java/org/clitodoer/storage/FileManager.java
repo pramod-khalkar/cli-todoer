@@ -1,9 +1,11 @@
 package org.clitodoer.storage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.clitodoer.handlers.NoteStatus;
 import org.clitodoer.model.Note;
 
 /**
@@ -94,12 +96,13 @@ public final class FileManager implements Operation {
   }
 
   @Override
-  public void updateNoteInGlobalSection(int noteIndex, String newText, boolean markDone) {
-    updateNoteInSection(GLOBAL_SECTION, noteIndex, newText, markDone);
+  public void updateNoteInGlobalSection(int noteIndex, String newText, NoteStatus noteStatus) {
+    updateNoteInSection(GLOBAL_SECTION, noteIndex, newText, noteStatus);
   }
 
   @Override
-  public void updateNoteInSection(String section, int noteIndex, String newText, boolean markDone) {
+  public void updateNoteInSection(
+      String section, int noteIndex, String newText, NoteStatus noteStatus) {
     FileData fileData = storage.read();
     if (fileData == null || fileData.getSections() == null) {
       return;
@@ -109,8 +112,8 @@ public final class FileManager implements Operation {
             .filter(sec -> section.equals(sec.getName()))
             .findFirst()
             .orElse(null);
-    if (targetSection != null && noteIndex > 0 && noteIndex <= targetSection.getNotes().size()) {
-      targetSection.updateNote(noteIndex, newText, markDone);
+    if (targetSection != null && noteIndex > 0) {
+      targetSection.updateNote(noteIndex, newText, noteStatus.toBoolean());
       storage.write(fileData);
     }
   }
@@ -158,6 +161,7 @@ public final class FileManager implements Operation {
     return fileData.getSections().stream()
         .filter(sec -> section.equals(sec.getName()))
         .flatMap(sec -> sec.getNotes().stream())
+        .sorted(Comparator.comparingInt(Note::getIndex))
         .toList();
   }
 

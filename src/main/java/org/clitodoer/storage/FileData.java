@@ -62,7 +62,9 @@ public class FileData {
       for (Note note : new LinkedHashSet<>(notes)) {
         if (note.getIndex() == index) {
           notes.remove(note);
-          note.setText(newText);
+          if (newText != null) {
+            note.setText(newText);
+          }
           note.setDone(markDone);
           note.setModifiedAt(Instant.now());
           notes.add(note);
