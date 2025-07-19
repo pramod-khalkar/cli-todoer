@@ -36,7 +36,7 @@ public class TodoServiceImpl implements TodoService {
   @Override
   public void listSectionNotes(String section) {
     List<Note> notes = repository.getNotesBySection(section);
-    printNoteList(notes);
+    printTable(notes);
   }
 
   @Override
@@ -61,13 +61,14 @@ public class TodoServiceImpl implements TodoService {
   }
 
   @Override
-  public void updateNoteInSection(String section, Integer noteIndex, String updatedText) {
-    repository.updateNoteInSection(section, noteIndex, updatedText);
+  public void updateNoteInSection(
+      String section, Integer noteIndex, String updatedText, boolean markDone) {
+    repository.updateNoteInSection(section, noteIndex, updatedText, markDone);
   }
 
   @Override
-  public void updateGlobalNote(Integer noteIndex, String updatedText) {
-    repository.updateNoteInGlobalSection(noteIndex, updatedText);
+  public void updateGlobalNote(Integer noteIndex, String updatedText, boolean markDone) {
+    repository.updateNoteInGlobalSection(noteIndex, updatedText, markDone);
   }
 
   @Override
@@ -85,18 +86,43 @@ public class TodoServiceImpl implements TodoService {
     repository.deleteSection(section);
   }
 
+  @Override
+  public void markNoteInSection(String section, Integer noteIndex, boolean mark) {
+    repository.markNoteInSection(section, noteIndex, mark);
+  }
+
   private void printSection(String section, List<Note> notes) {
-    if (section != null) {
+    if (section != null && !notes.isEmpty()) {
       System.out.printf("%s %s\n", TRIANGULAR_BULLET, section);
-      printNoteList(notes);
+      printTable(notes);
     }
   }
 
   private void printNote(Note note) {
-    if (note != null) System.out.printf("[%d]  %s\n", note.getIndex(), note.getText());
+    if (note != null)
+      System.out.printf(
+          "[%d]  %s   %s\n", note.getIndex(), note.getText(), note.isDone() ? "✓" : "✗");
   }
 
-  private void printNoteList(List<Note> noteList) {
-    noteList.forEach(this::printNote);
+  void printTable(List<Note> notes) {
+    // Determine max length of note text
+    int maxNoteLength = "Note".length();
+    for (Note note : notes) {
+      maxNoteLength = Math.max(maxNoteLength, note.getText().length());
+    }
+
+    // Calculate formats based on dynamic width
+    String format = "| %-6s | %-" + maxNoteLength + "s | %-4s |\n";
+    String line =
+        "+" + "-".repeat(8) + "+" + "-".repeat(maxNoteLength + 2) + "+" + "-".repeat(6) + "+";
+
+    // Print table
+    System.out.println(line);
+    System.out.printf("| %-6s | %-" + maxNoteLength + "s | %-4s |\n", "Index", "Note", "Done");
+    System.out.println(line);
+    for (Note note : notes) {
+      System.out.printf(format, note.getIndex(), note.getText(), note.isDone() ? "✓" : "✗");
+    }
+    System.out.println(line);
   }
 }

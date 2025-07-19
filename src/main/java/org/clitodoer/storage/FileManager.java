@@ -94,12 +94,12 @@ public final class FileManager implements Operation {
   }
 
   @Override
-  public void updateNoteInGlobalSection(int noteIndex, String newText) {
-    updateNoteInSection(GLOBAL_SECTION, noteIndex, newText);
+  public void updateNoteInGlobalSection(int noteIndex, String newText, boolean markDone) {
+    updateNoteInSection(GLOBAL_SECTION, noteIndex, newText, markDone);
   }
 
   @Override
-  public void updateNoteInSection(String section, int noteIndex, String newText) {
+  public void updateNoteInSection(String section, int noteIndex, String newText, boolean markDone) {
     FileData fileData = storage.read();
     if (fileData == null || fileData.getSections() == null) {
       return;
@@ -110,7 +110,7 @@ public final class FileManager implements Operation {
             .findFirst()
             .orElse(null);
     if (targetSection != null && noteIndex > 0 && noteIndex <= targetSection.getNotes().size()) {
-      targetSection.updateNote(noteIndex, newText);
+      targetSection.updateNote(noteIndex, newText, markDone);
       storage.write(fileData);
     }
   }
@@ -128,6 +128,23 @@ public final class FileManager implements Operation {
             .orElse(null);
     if (targetSection != null) {
       targetSection.setName(newText);
+      storage.write(fileData);
+    }
+  }
+
+  @Override
+  public void markNoteInSection(String section, int noteIndex, boolean mark) {
+    FileData fileData = storage.read();
+    if (fileData == null || fileData.getSections() == null) {
+      return;
+    }
+    FileData.Section targetSection =
+        fileData.getSections().stream()
+            .filter(sec -> section.equals(sec.getName()))
+            .findFirst()
+            .orElse(null);
+    if (targetSection != null && noteIndex > 0 && noteIndex <= targetSection.getNotes().size()) {
+      targetSection.markNoteDone(noteIndex, mark);
       storage.write(fileData);
     }
   }

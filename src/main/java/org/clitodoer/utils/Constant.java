@@ -33,8 +33,10 @@ public class Constant {
           todo list,
           todo update --section work --note 1 \\"Complete the report by EOD\\",
           todo update --note 1 \\"Complete the report by EOD\\",
+          todo update --note 1 --mark true,
           todo delete --section work --note 1,
           todo delete --note 1,
           todo delete --section work
           """;
+  public static final String TICK_DESC = "Presence of this flag assume done else not done";
 }

@@ -19,13 +19,15 @@ public interface TodoService {
 
   void listSectionsWithoutNote();
 
-  void updateNoteInSection(String section, Integer noteIndex, String noteText);
+  void updateNoteInSection(String section, Integer noteIndex, String noteText, boolean markDone);
 
-  void updateGlobalNote(Integer noteIndex, String noteText);
+  void updateGlobalNote(Integer noteIndex, String noteText, boolean markDone);
 
   void deleteNoteInSection(String section, Integer noteIndex);
 
   void deleteGlobalNote(Integer noteIndex);
 
   void deleteSection(String section);
+
+  void markNoteInSection(String section, Integer noteIndex, boolean mark);
 }

@@ -25,9 +25,11 @@ public interface TodoRepository {
 
   void deleteSection(String section);
 
-  void updateNoteInSection(String section, int noteIndex, String newText);
+  void updateNoteInSection(String section, int noteIndex, String newText, boolean markDone);
 
-  void updateNoteInGlobalSection(int noteIndex, String newText);
+  void updateNoteInGlobalSection(int noteIndex, String newText, boolean markDone);
 
   void updateSection(String section, String newText);
+
+  void markNoteInSection(String section, int noteIndex, boolean mark);
 }

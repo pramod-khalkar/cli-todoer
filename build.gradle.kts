@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.googlecode.lanterna:lanterna:3.1.2")
+//    implementation("com.googlecode.lanterna:lanterna:3.1.2")
     implementation("info.picocli:picocli:4.7.7")
     annotationProcessor("info.picocli:picocli-codegen:4.7.7")
     compileOnly("org.projectlombok:lombok:1.18.38")

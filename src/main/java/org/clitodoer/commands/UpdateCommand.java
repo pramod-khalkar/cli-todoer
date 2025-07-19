@@ -20,7 +20,12 @@ public class UpdateCommand implements Runnable {
   @CommandLine.Option(
       names = {"--note", "-n"},
       description = Constant.NOTE_ID_DESC)
-  Integer noteId;
+  Integer index;
+
+  @CommandLine.Option(
+      names = {"--tick", "-t"},
+      description = Constant.TICK_DESC)
+  boolean isDone;
 
   @CommandLine.Parameters(index = "0", description = Constant.NOTE_DESC)
   String newText;
@@ -33,6 +38,6 @@ public class UpdateCommand implements Runnable {
 
   @Override
   public void run() {
-    eventBus.publish(new UpdateTodoEvent(noteId, sectionId, newText));
+    eventBus.publish(new UpdateTodoEvent(index, sectionId, newText, isDone));
   }
 }
