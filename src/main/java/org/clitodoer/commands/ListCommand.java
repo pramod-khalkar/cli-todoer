@@ -23,6 +23,11 @@ public class ListCommand implements Runnable {
       arity = "0..1")
   private String section;
 
+  @CommandLine.Option(
+      names = {"--section-only"},
+      description = "List only sections")
+  private boolean sectionOnly;
+
   private final EventBus eventBus;
 
   public ListCommand(EventBus eventBus) {
@@ -31,6 +36,6 @@ public class ListCommand implements Runnable {
 
   @Override
   public void run() {
-    eventBus.publish(new ListTodoEvent(note, section));
+    eventBus.publish(new ListTodoEvent(note, section, sectionOnly));
   }
 }

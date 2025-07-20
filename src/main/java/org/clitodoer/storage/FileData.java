@@ -1,5 +1,6 @@
 package org.clitodoer.storage;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ import org.clitodoer.model.Note;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FileData {
   private Set<Section> sections;
 
@@ -33,6 +35,7 @@ public class FileData {
   @AllArgsConstructor
   @NoArgsConstructor
   @EqualsAndHashCode
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Section {
     private String name;
     private Set<Note> notes;
@@ -55,11 +58,30 @@ public class FileData {
       }
     }
 
-    public void updateNote(int index, String newText) {
+    public void updateNote(int index, String newText, boolean markDone) {
       for (Note note : new LinkedHashSet<>(notes)) {
         if (note.getIndex() == index) {
           notes.remove(note);
-          note.setText(newText);
+          if (newText != null) {
+            note.setText(newText);
+          }
+          note.setDone(markDone);
+          note.setModifiedAt(Instant.now());
+          notes.add(note);
+          break;
+        }
+      }
+    }
+
+    public void updateNote(int index, String newText) {
+      updateNote(index, newText, false);
+    }
+
+    public void markNoteDone(int index, boolean mark) {
+      for (Note note : new LinkedHashSet<>(notes)) {
+        if (note.getIndex() == index) {
+          notes.remove(note);
+          note.setDone(mark);
           note.setModifiedAt(Instant.now());
           notes.add(note);
           break;

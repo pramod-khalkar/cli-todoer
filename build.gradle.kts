@@ -7,14 +7,14 @@ plugins {
 }
 
 group = "org.cli-todoer"
-version = "1.1.1"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("com.googlecode.lanterna:lanterna:3.1.2")
+//    implementation("com.googlecode.lanterna:lanterna:3.1.2")
     implementation("info.picocli:picocli:4.7.7")
     annotationProcessor("info.picocli:picocli-codegen:4.7.7")
     compileOnly("org.projectlombok:lombok:1.18.38")
@@ -61,6 +61,17 @@ tasks.named("nativeCompile") {
 }
 application {
     mainClass.set("org.clitodoer.TodoLauncher")
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
 }
 
 graalvmNative {

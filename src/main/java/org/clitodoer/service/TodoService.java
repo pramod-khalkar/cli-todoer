@@ -1,5 +1,7 @@
 package org.clitodoer.service;
 
+import org.clitodoer.handlers.NoteStatus;
+
 /**
  * @author : Pramod Khalkar
  * @since : 11/07/25, Fri
@@ -19,9 +21,10 @@ public interface TodoService {
 
   void listSectionsWithoutNote();
 
-  void updateNoteInSection(String section, Integer noteIndex, String noteText);
+  void updateNoteInSection(
+      String section, Integer noteIndex, String noteText, NoteStatus noteStatus);
 
-  void updateGlobalNote(Integer noteIndex, String noteText);
+  void updateGlobalNote(Integer noteIndex, String noteText, NoteStatus noteStatus);
 
   void deleteNoteInSection(String section, Integer noteIndex);
 

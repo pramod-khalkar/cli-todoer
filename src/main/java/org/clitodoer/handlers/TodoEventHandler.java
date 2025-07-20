@@ -34,20 +34,24 @@ public class TodoEventHandler {
   }
 
   void handleList(ListTodoEvent event) {
-    if (event.section != null && !event.section.isEmpty()) {
-      service.listSectionNotes(event.section);
-    } else if (event.listNotes) {
-      service.listAllSectionNotesWithoutSectionName();
+    if (event.sectionOnly) {
+      service.listSectionsWithoutNote();
     } else {
-      service.listAllSectionNotes();
+      if (event.section != null && !event.section.isEmpty()) {
+        service.listSectionNotes(event.section);
+      } else if (event.listNotes) {
+        service.listAllSectionNotesWithoutSectionName();
+      } else {
+        service.listAllSectionNotes();
+      }
     }
   }
 
   void handleUpdate(UpdateTodoEvent event) {
     if (event.section != null) {
-      service.updateNoteInSection(event.section, event.noteIndex, event.noteText);
+      service.updateNoteInSection(event.section, event.noteIndex, event.noteText, event.noteStatus);
     } else {
-      service.updateGlobalNote(event.noteIndex, event.noteText);
+      service.updateGlobalNote(event.noteIndex, event.noteText, event.noteStatus);
     }
     System.out.println("✔ Note updated");
   }

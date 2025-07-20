@@ -2,6 +2,7 @@ package org.clitodoer.commands;
 
 import org.clitodoer.core.EventBus;
 import org.clitodoer.events.UpdateTodoEvent;
+import org.clitodoer.handlers.NoteStatus;
 import org.clitodoer.utils.Constant;
 import picocli.CommandLine;
 
@@ -20,9 +21,19 @@ public class UpdateCommand implements Runnable {
   @CommandLine.Option(
       names = {"--note", "-n"},
       description = Constant.NOTE_ID_DESC)
-  Integer noteId;
+  Integer index;
 
-  @CommandLine.Parameters(index = "0", description = Constant.NOTE_DESC)
+  @CommandLine.Option(
+      names = {"--tick", "-t"},
+      description = Constant.TICK_DESC)
+  boolean isDone;
+
+  @CommandLine.Option(
+      names = {"--cross", "-c"},
+      description = Constant.CROSS_DESC)
+  boolean isCross;
+
+  @CommandLine.Parameters(index = "0", description = Constant.NOTE_DESC, arity = "0..1")
   String newText;
 
   private EventBus eventBus;
@@ -33,6 +44,11 @@ public class UpdateCommand implements Runnable {
 
   @Override
   public void run() {
-    eventBus.publish(new UpdateTodoEvent(noteId, sectionId, newText));
+    if (isDone && isCross) {
+      System.err.println("Error: You cannot use both --tick and --cross options at the same time.");
+      return;
+    }
+    NoteStatus noteStatus = isDone ? NoteStatus.TICK : NoteStatus.CROSS;
+    eventBus.publish(new UpdateTodoEvent(index, sectionId, newText, noteStatus));
   }
 }

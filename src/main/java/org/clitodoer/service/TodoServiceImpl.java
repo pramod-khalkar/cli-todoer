@@ -1,7 +1,8 @@
 package org.clitodoer.service;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+import org.clitodoer.handlers.NoteStatus;
 import org.clitodoer.model.Note;
 import org.clitodoer.repository.TodoRepository;
 
@@ -36,7 +37,7 @@ public class TodoServiceImpl implements TodoService {
   @Override
   public void listSectionNotes(String section) {
     List<Note> notes = repository.getNotesBySection(section);
-    printNoteList(notes);
+    printTable(notes);
   }
 
   @Override
@@ -56,18 +57,23 @@ public class TodoServiceImpl implements TodoService {
 
   @Override
   public void listAllSectionNotesWithoutSectionName() {
-    Map<String, List<Note>> allSections = repository.getAllSections();
-    allSections.forEach((k, v) -> v.forEach(this::printNote));
+    List<Note> allNotes =
+        repository.getAllSections().values().stream()
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+    printTable(allNotes);
+    System.out.println("📝 Note: Indexing is based on the section, not globally.");
   }
 
   @Override
-  public void updateNoteInSection(String section, Integer noteIndex, String updatedText) {
-    repository.updateNoteInSection(section, noteIndex, updatedText);
+  public void updateNoteInSection(
+      String section, Integer noteIndex, String updatedText, NoteStatus noteStatus) {
+    repository.updateNoteInSection(section, noteIndex, updatedText, noteStatus);
   }
 
   @Override
-  public void updateGlobalNote(Integer noteIndex, String updatedText) {
-    repository.updateNoteInGlobalSection(noteIndex, updatedText);
+  public void updateGlobalNote(Integer noteIndex, String updatedText, NoteStatus noteStatus) {
+    repository.updateNoteInGlobalSection(noteIndex, updatedText, noteStatus);
   }
 
   @Override
@@ -86,17 +92,37 @@ public class TodoServiceImpl implements TodoService {
   }
 
   private void printSection(String section, List<Note> notes) {
-    if (section != null) {
+    if (section != null && !notes.isEmpty()) {
       System.out.printf("%s %s\n", TRIANGULAR_BULLET, section);
-      printNoteList(notes);
+      printTable(notes);
     }
   }
 
   private void printNote(Note note) {
-    if (note != null) System.out.printf("[%d]  %s\n", note.getIndex(), note.getText());
+    if (note != null)
+      System.out.printf(
+          "[%d]  %s   %s\n", note.getIndex(), note.getText(), note.isDone() ? "✓" : "✗");
   }
 
-  private void printNoteList(List<Note> noteList) {
-    noteList.forEach(this::printNote);
+  void printTable(List<Note> notes) {
+    // Determine max length of note text
+    int maxNoteLength = "Note".length();
+    for (Note note : notes) {
+      maxNoteLength = Math.max(maxNoteLength, note.getText().length());
+    }
+
+    // Calculate formats based on dynamic width
+    String format = "| %-6s | %-" + maxNoteLength + "s | %-4s |\n";
+    String line =
+        "+" + "-".repeat(8) + "+" + "-".repeat(maxNoteLength + 2) + "+" + "-".repeat(6) + "+";
+
+    // Print table
+    System.out.println(line);
+    System.out.printf("| %-6s | %-" + maxNoteLength + "s | %-4s |\n", "Index", "Note", "Done");
+    System.out.println(line);
+    for (Note note : notes) {
+      System.out.printf(format, note.getIndex(), note.getText(), note.isDone() ? "✓" : "✗");
+    }
+    System.out.println(line);
   }
 }

@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.clitodoer.handlers.NoteStatus;
 import org.clitodoer.model.Note;
-import org.clitodoer.storage.*;
+import org.clitodoer.storage.Operation;
 
 /**
  * @author : Pramod Khalkar
@@ -61,13 +62,14 @@ public class FileTodoRepository implements TodoRepository {
   }
 
   @Override
-  public void updateNoteInSection(String section, int noteIndex, String newText) {
-    fileOperation.updateNoteInSection(section, noteIndex, newText);
+  public void updateNoteInSection(
+      String section, int noteIndex, String newText, NoteStatus noteStatus) {
+    fileOperation.updateNoteInSection(section, noteIndex, newText, noteStatus);
   }
 
   @Override
-  public void updateNoteInGlobalSection(int noteIndex, String newText) {
-    fileOperation.updateNoteInGlobalSection(noteIndex, newText);
+  public void updateNoteInGlobalSection(int noteIndex, String newText, NoteStatus noteStatus) {
+    fileOperation.updateNoteInGlobalSection(noteIndex, newText, noteStatus);
   }
 
   @Override

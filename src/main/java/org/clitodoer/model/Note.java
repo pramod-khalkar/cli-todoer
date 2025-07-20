@@ -18,6 +18,7 @@ public class Note {
   private Integer index;
   private String text;
   private Integer priority;
+  private boolean isDone = false;
   private Instant createdAt;
   private Instant modifiedAt;
 
@@ -25,6 +26,7 @@ public class Note {
     this.index = index;
     this.text = text;
     this.priority = 0;
+    this.isDone = false;
     this.createdAt = Instant.now();
     this.modifiedAt = Instant.now();
   }
