@@ -1,17 +1,16 @@
 package org.clitodoer.todotests;
 
-import org.clitodoer.utils.Helper;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.clitodoer.utils.Helper;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * @author : Pramod Khalkar
@@ -78,7 +77,8 @@ public class TodoCommandTest extends Configuration {
     int exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     // then
     assertThat(exitCode).isEqualTo(0);
-    List<String> notes = Pattern.compile("\\|\\s*\\d+\\s*\\|\\s*(.*?)\\s*\\|")
+    List<String> notes =
+        Pattern.compile("\\|\\s*\\d+\\s*\\|\\s*(.*?)\\s*\\|")
             .matcher(consoleOutput())
             .results()
             .map(mr -> mr.group(1))
@@ -95,11 +95,9 @@ public class TodoCommandTest extends Configuration {
     // then
     assertThat(exitCode).isEqualTo(0);
     Map<String, List<String>> sectionToNotes = Helper.extractNotesBySection(consoleOutput());
-    assertThat(sectionToNotes.get(SHOPPING_SECTION))
-            .containsExactlyElementsOf(SHOPPING_TODO);
+    assertThat(sectionToNotes.get(SHOPPING_SECTION)).containsExactlyElementsOf(SHOPPING_TODO);
 
-    assertThat(sectionToNotes.get(GLOBAL_SECTION))
-            .containsExactlyElementsOf(GLOBAL_TODO);
+    assertThat(sectionToNotes.get(GLOBAL_SECTION)).containsExactlyElementsOf(GLOBAL_TODO);
   }
 
   @Order(6)
@@ -116,7 +114,11 @@ public class TodoCommandTest extends Configuration {
 
     exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(SHOPPING_TODO.stream().map(n -> n.equals(BUY_MILK) ? BUY_MILK + BUY_BREAD : n).toList());
+    assertThat(Helper.extractNotesFromOutput(consoleOutput()))
+        .containsExactlyInAnyOrderElementsOf(
+            SHOPPING_TODO.stream()
+                .map(n -> n.equals(BUY_MILK) ? BUY_MILK + BUY_BREAD : n)
+                .toList());
   }
 
   @Order(7)
@@ -131,10 +133,28 @@ public class TodoCommandTest extends Configuration {
 
     exitCode = cli.execute(LIST, SECTION_OPTION, GLOBAL_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(GLOBAL_TODO.stream().map(n -> n.equals(BUY_MILK) ? BUY_MILK + BUY_BREAD : n).toList());
+    assertThat(Helper.extractNotesFromOutput(consoleOutput()))
+        .containsExactlyInAnyOrderElementsOf(
+            GLOBAL_TODO.stream().map(n -> n.equals(BUY_MILK) ? BUY_MILK + BUY_BREAD : n).toList());
   }
 
   @Order(8)
+  @DisplayName("todo update --section ShoppingTodo --note 1 --tick")
+  @Test
+  void updateNoteInSectionWithTickTest() {
+    // when
+    int exitCode =
+        cli.execute(UPDATE, SECTION_OPTION, SHOPPING_SECTION, NOTE_OPTION, "1", "--tick");
+    // then
+    assertThat(exitCode).isEqualTo(0);
+    assertThat(consoleOutput()).contains(NOTE_UPDATED_MSG);
+
+    exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
+    assertThat(exitCode).isEqualTo(0);
+    assertThat(consoleOutput()).contains("Buy oil           | ✓" );
+  }
+
+  @Order(9)
   @DisplayName("todo delete --note <index_no>")
   @Test
   void deleteNoteFromGlobalSectionTest() {
@@ -147,10 +167,11 @@ public class TodoCommandTest extends Configuration {
     // Validate deletion by hitting list command
     exitCode = cli.execute(LIST, SECTION_OPTION, GLOBAL_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(List.of(BUY_OIL,BUY_MILK + BUY_BREAD));
+    assertThat(Helper.extractNotesFromOutput(consoleOutput()))
+        .containsExactlyInAnyOrderElementsOf(List.of(BUY_BREAD, BUY_MILK + BUY_BREAD));
   }
 
-  @Order(9)
+  @Order(10)
   @DisplayName("todo delete --section ShoppingTodo --note <index_no>")
   @Test
   void deleteNoteFromSectionTest() {
@@ -163,10 +184,11 @@ public class TodoCommandTest extends Configuration {
     // Validate deletion by hitting list command
     exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(List.of(BUY_OIL,BUY_BREAD));
+    assertThat(Helper.extractNotesFromOutput(consoleOutput()))
+        .containsExactlyInAnyOrderElementsOf(List.of(BUY_OIL, BUY_BREAD));
   }
 
-  @Order(10)
+  @Order(11)
   @DisplayName("todo delete --section ShoppingTodo")
   @Test
   void deleteSectionTest() {
@@ -179,5 +201,16 @@ public class TodoCommandTest extends Configuration {
     exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     assertThat(exitCode).isEqualTo(0);
     assertThat(Helper.extractNotesFromOutput(consoleOutput())).isEmpty();
+  }
+
+  @Order(12)
+  @DisplayName("todo list --section-only")
+    @Test
+  void listSectionsOnlyTest() {
+    // when
+    int exitCode = cli.execute(LIST, "--section-only");
+    // then
+    assertThat(exitCode).isEqualTo(0);
+    assertThat(Helper.noOfLines(consoleOutput())).isEqualTo(2);
   }
 }
