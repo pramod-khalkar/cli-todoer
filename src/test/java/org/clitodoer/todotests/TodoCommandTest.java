@@ -1,13 +1,17 @@
 package org.clitodoer.todotests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.stream.Stream;
-import org.clitodoer.utils.Constant;
+import org.clitodoer.utils.Helper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author : Pramod Khalkar
@@ -18,11 +22,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TodoCommandTest extends Configuration {
 
+  private final List<String> SHOPPING_TODO = List.of(BUY_MILK, BUY_OIL, BUY_BREAD);
+  private final List<String> GLOBAL_TODO = List.of(BUY_MILK, BUY_BREAD, BUY_OIL);
+
   static Stream<Arguments> addNoteArgsProvider() {
     return Stream.of(
         Arguments.of(ADD, SECTION_OPTION, SHOPPING_SECTION, BUY_MILK),
         Arguments.of(ADD, SECTION_OPTION, SHOPPING_SECTION, BUY_BREAD),
-        Arguments.of(ADD, SECTION_OPTION, SHOPPING_SECTION, BUY_EGGS));
+        Arguments.of(ADD, SECTION_OPTION, SHOPPING_SECTION, BUY_OIL));
   }
 
   @Order(1)
@@ -38,7 +45,7 @@ public class TodoCommandTest extends Configuration {
 
   static Stream<Arguments> addNoteGlobalArgsProvider() {
     return Stream.of(
-        Arguments.of(ADD, BUY_MILK), Arguments.of(ADD, BUY_BREAD), Arguments.of(ADD, BUY_EGGS));
+        Arguments.of(ADD, BUY_MILK), Arguments.of(ADD, BUY_BREAD), Arguments.of(ADD, BUY_OIL));
   }
 
   @Order(2)
@@ -71,7 +78,12 @@ public class TodoCommandTest extends Configuration {
     int exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     // then
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Constant.noOfLines(consoleOutput())).isEqualTo(3);
+    List<String> notes = Pattern.compile("\\|\\s*\\d+\\s*\\|\\s*(.*?)\\s*\\|")
+            .matcher(consoleOutput())
+            .results()
+            .map(mr -> mr.group(1))
+            .toList();
+    assertThat(notes).containsExactlyElementsOf(SHOPPING_TODO);
   }
 
   @Order(5)
@@ -82,7 +94,12 @@ public class TodoCommandTest extends Configuration {
     int exitCode = cli.execute(LIST);
     // then
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Constant.noOfLines(consoleOutput())).isEqualTo(9);
+    Map<String, List<String>> sectionToNotes = Helper.extractNotesBySection(consoleOutput());
+    assertThat(sectionToNotes.get(SHOPPING_SECTION))
+            .containsExactlyElementsOf(SHOPPING_TODO);
+
+    assertThat(sectionToNotes.get(GLOBAL_SECTION))
+            .containsExactlyElementsOf(GLOBAL_TODO);
   }
 
   @Order(6)
@@ -92,16 +109,14 @@ public class TodoCommandTest extends Configuration {
     // when
     int exitCode =
         cli.execute(
-            UPDATE, SECTION_OPTION, SHOPPING_SECTION, NOTE_OPTION, "1", BUY_MILK + " and bread");
+            UPDATE, SECTION_OPTION, SHOPPING_SECTION, NOTE_OPTION, "1", BUY_MILK + BUY_BREAD);
     // then
     assertThat(exitCode).isEqualTo(0);
     assertThat(consoleOutput()).contains(NOTE_UPDATED_MSG);
 
-    // Validate update by hitting list command
-    exitCode = cli.execute(LIST);
+    exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(consoleOutput())
-        .contains(BUY_MILK + " and bread"); // @Todo add index validation as well
+    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(SHOPPING_TODO.stream().map(n -> n.equals(BUY_MILK) ? BUY_MILK + BUY_BREAD : n).toList());
   }
 
   @Order(7)
@@ -109,17 +124,14 @@ public class TodoCommandTest extends Configuration {
   @Test
   void updateNoteInGlobalSectionTest() {
     // when
-    int exitCode = cli.execute(UPDATE, NOTE_OPTION, "1", BUY_MILK + " and bread");
+    int exitCode = cli.execute(UPDATE, NOTE_OPTION, "1", BUY_MILK + BUY_BREAD);
     // then
     assertThat(exitCode).isEqualTo(0);
     assertThat(consoleOutput()).contains(NOTE_UPDATED_MSG);
 
-    // Validate update by hitting list command
     exitCode = cli.execute(LIST, SECTION_OPTION, GLOBAL_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Constant.noOfLinesIgnoreFirstLine(consoleOutput())).isEqualTo(3);
-    assertThat(consoleOutput())
-        .contains(BUY_MILK + " and bread"); // @Todo add index validation as well
+    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(GLOBAL_TODO.stream().map(n -> n.equals(BUY_MILK) ? BUY_MILK + BUY_BREAD : n).toList());
   }
 
   @Order(8)
@@ -135,7 +147,7 @@ public class TodoCommandTest extends Configuration {
     // Validate deletion by hitting list command
     exitCode = cli.execute(LIST, SECTION_OPTION, GLOBAL_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Constant.noOfLinesIgnoreFirstLine(consoleOutput())).isEqualTo(2);
+    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(List.of(BUY_OIL,BUY_MILK + BUY_BREAD));
   }
 
   @Order(9)
@@ -151,7 +163,7 @@ public class TodoCommandTest extends Configuration {
     // Validate deletion by hitting list command
     exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Constant.noOfLinesIgnoreFirstLine(consoleOutput())).isEqualTo(2);
+    assertThat(Helper.extractNotesFromOutput(consoleOutput())).containsExactlyInAnyOrderElementsOf(List.of(BUY_OIL,BUY_BREAD));
   }
 
   @Order(10)
@@ -164,9 +176,8 @@ public class TodoCommandTest extends Configuration {
     assertThat(exitCode).isEqualTo(0);
     assertThat(consoleOutput()).contains("Note deleted");
 
-    // Validate deletion by hitting list command
     exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(Constant.noOfLinesIgnoreFirstLine(consoleOutput())).isEqualTo(0);
+    assertThat(Helper.extractNotesFromOutput(consoleOutput())).isEmpty();
   }
 }

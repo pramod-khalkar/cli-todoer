@@ -31,7 +31,7 @@ public abstract class Configuration {
   static final String GLOBAL_SECTION = "global";
   static final String BUY_MILK = "Buy milk";
   static final String BUY_BREAD = "Buy bread";
-  static final String BUY_EGGS = "Buy oil";
+  static final String BUY_OIL = "Buy oil";
   static final String NOTE_ADDED_MSG = "Note added";
   static final String SECTION_ADDED_MSG = "Note added";
   static final String NOTE_UPDATED_MSG = "Note updated";
