@@ -63,6 +63,17 @@ application {
     mainClass.set("org.clitodoer.TodoLauncher")
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
+}
+
 graalvmNative {
     binaries {
         named("main") {

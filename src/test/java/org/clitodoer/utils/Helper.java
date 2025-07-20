@@ -49,6 +49,6 @@ public class Helper {
       return 0;
     }
     return Arrays.stream(consoleOutput.split("\\R")).filter(line -> !line.trim().isEmpty()).count()
-            - 1;
+        - 1;
   }
 }

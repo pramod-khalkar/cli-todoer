@@ -151,7 +151,7 @@ public class TodoCommandTest extends Configuration {
 
     exitCode = cli.execute(LIST, SECTION_OPTION, SHOPPING_SECTION);
     assertThat(exitCode).isEqualTo(0);
-    assertThat(consoleOutput()).contains("Buy oil           | ✓" );
+    assertThat(consoleOutput()).contains("Buy oil           | ✓");
   }
 
   @Order(9)
@@ -205,7 +205,7 @@ public class TodoCommandTest extends Configuration {
 
   @Order(12)
   @DisplayName("todo list --section-only")
-    @Test
+  @Test
   void listSectionsOnlyTest() {
     // when
     int exitCode = cli.execute(LIST, "--section-only");
