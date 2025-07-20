@@ -42,4 +42,5 @@ public class Constant {
       "Presence of this flag means your are marking a note as done";
   public static final String CROSS_DESC =
       "Presence of this flag means your are marking a note as incomplete";
+  public static final String SECTION_ONLY_DESC = "List only sections without notes";
 }

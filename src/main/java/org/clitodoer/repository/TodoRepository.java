@@ -31,6 +31,4 @@ public interface TodoRepository {
   void updateNoteInGlobalSection(int noteIndex, String newText, NoteStatus noteStatus);
 
   void updateSection(String section, String newText);
-
-  void markNoteInSection(String section, int noteIndex, boolean mark);
 }

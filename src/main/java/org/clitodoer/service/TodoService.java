@@ -31,6 +31,4 @@ public interface TodoService {
   void deleteGlobalNote(Integer noteIndex);
 
   void deleteSection(String section);
-
-  void markNoteInSection(String section, Integer noteIndex, boolean mark);
 }

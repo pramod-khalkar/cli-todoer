@@ -1,7 +1,7 @@
 package org.clitodoer.service;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 import org.clitodoer.handlers.NoteStatus;
 import org.clitodoer.model.Note;
 import org.clitodoer.repository.TodoRepository;
@@ -57,8 +57,12 @@ public class TodoServiceImpl implements TodoService {
 
   @Override
   public void listAllSectionNotesWithoutSectionName() {
-    Map<String, List<Note>> allSections = repository.getAllSections();
-    allSections.forEach((k, v) -> v.forEach(this::printNote));
+    List<Note> allNotes =
+        repository.getAllSections().values().stream()
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+    printTable(allNotes);
+    System.out.println("📝 Note: Indexing is based on the section, not globally.");
   }
 
   @Override
@@ -85,11 +89,6 @@ public class TodoServiceImpl implements TodoService {
   @Override
   public void deleteSection(String section) {
     repository.deleteSection(section);
-  }
-
-  @Override
-  public void markNoteInSection(String section, Integer noteIndex, boolean mark) {
-    repository.markNoteInSection(section, noteIndex, mark);
   }
 
   private void printSection(String section, List<Note> notes) {

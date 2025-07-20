@@ -34,12 +34,16 @@ public class TodoEventHandler {
   }
 
   void handleList(ListTodoEvent event) {
-    if (event.section != null && !event.section.isEmpty()) {
-      service.listSectionNotes(event.section);
-    } else if (event.listNotes) {
-      service.listAllSectionNotesWithoutSectionName();
+    if (event.sectionOnly) {
+      service.listSectionsWithoutNote();
     } else {
-      service.listAllSectionNotes();
+      if (event.section != null && !event.section.isEmpty()) {
+        service.listSectionNotes(event.section);
+      } else if (event.listNotes) {
+        service.listAllSectionNotesWithoutSectionName();
+      } else {
+        service.listAllSectionNotes();
+      }
     }
   }
 

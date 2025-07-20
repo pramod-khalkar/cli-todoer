@@ -76,9 +76,4 @@ public class FileTodoRepository implements TodoRepository {
   public void updateSection(String section, String newText) {
     fileOperation.updateSection(section, newText);
   }
-
-  @Override
-  public void markNoteInSection(String section, int noteIndex, boolean mark) {
-    fileOperation.markNoteInSection(section, noteIndex, mark);
-  }
 }
