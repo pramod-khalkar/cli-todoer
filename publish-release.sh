@@ -2,7 +2,7 @@
 # This script publishes the release to github
 # @Todo Automate this later with a GitHub Action
 # Note: Always update version here and change notes before running this script
-set -ex
+set -e
 
 # Be on the master branch before release
 git checkout master
@@ -14,15 +14,20 @@ git pull origin master
 # Extract version from build.gradle.kts
 VERSION=$(grep -E '^\s*version' build.gradle.kts | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 
-# Construct title and notes
-#@Todo take notes from CHANGELOGS file
-NOTES="Initial release with basic functionality todo task management"
+# extract release notes from CHANGELOG.md
+CHANGELOG_NOTES=$(awk -v version="$VERSION" '
+  BEGIN { in_block=0 }
+  $0 ~ "^## \\[" version "\\]" { in_block=1; next }
+  in_block && $0 ~ "^## " { exit }
+  in_block { print }
+' CHANGELOG.md)
+
 # Path to JAR
 JAR_PATH="./build/libs/cli-todoer-*-all.jar"
 
 # Show previous steps
 echo "Ready to release version v$VERSION with JAR: $JAR_PATH"
-echo "Release notes: $NOTES"
+echo "Release notes: $CHANGELOG_NOTES"
 read -p "Do you want to publish this release? (y/N): " CONFIRM
 if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
   echo "Release cancelled."

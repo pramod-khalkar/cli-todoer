@@ -1,3 +1,6 @@
+## [1.0.1]
+- bug fixes and improvements
+
 ## [1.0.0]
 - Initial release with basic features:
   - Add todo notes
