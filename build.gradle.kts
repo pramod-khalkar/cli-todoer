@@ -53,12 +53,37 @@ spotless {
     }
 }
 
-tasks.named("build") {
-    dependsOn("spotlessApply", "shadowJar")
+tasks.register<Zip>("packageZip") {
+    group = "distribution"
+    description = "Packages the shadow JAR and install script into a zip file"
+
+    // Output zip location
+    destinationDirectory.set(layout.buildDirectory.dir("distributions"))
+    archiveFileName.set("cli-todoer.zip")
+
+    // Include the install script
+    from("install.sh")
+    // Include the shadowJar output
+    from("$buildDir/libs/cli-todoer-${project.version}-all.jar") {
+        rename { "cli-todoer.jar" }
+    }
+
+    // Optional: put inside a folder in the zip
+    into("cli-todoer")
 }
+
+tasks.named("build") {
+    dependsOn("spotlessApply", "shadowJar", "packageZip")
+}
+
+tasks.named("packageZip") {
+    dependsOn("shadowJar")
+}
+
 tasks.named("nativeCompile") {
     dependsOn("build")
 }
+
 application {
     mainClass.set("org.clitodoer.TodoLauncher")
 }
