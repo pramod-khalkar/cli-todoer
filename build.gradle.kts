@@ -63,6 +63,7 @@ tasks.register<Zip>("packageZip") {
 
     // Include the install script
     from("install.sh")
+    from("install.bat")
     // Include the shadowJar output
     from("$buildDir/libs/cli-todoer-${project.version}-all.jar") {
         rename { "cli-todoer.jar" }
