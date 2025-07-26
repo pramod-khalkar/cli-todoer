@@ -14,19 +14,16 @@ import picocli.CommandLine;
  * @since : 12/07/25, Sat
  */
 public class Initializer {
-  private Operation operation;
 
-  public Initializer withOperation(Operation operation) {
-    this.operation = operation;
-    return this;
+  private final FilePathProvider filePathProvider;
+
+  public Initializer(FilePathProvider filePathProvider) {
+    this.filePathProvider = filePathProvider;
   }
 
-  public CommandLine build() {
-    if (operation == null) {
-      throw new IllegalStateException("Operation must be set before building.");
-    }
+  public CommandLine init() {
     EventBus bus = new EventBus();
-    TodoRepository repo = new FileTodoRepository(operation);
+    TodoRepository repo = new FileTodoRepository(new FileStorage(filePathProvider.getFilePath()));
     TodoService service = new TodoServiceImpl(repo);
     new TodoEventHandler(bus, service);
     CommandLine cmd = new CommandLine(new TodoCommand());
@@ -34,7 +31,6 @@ public class Initializer {
     cmd.addSubcommand("list", new ListCommand(bus));
     cmd.addSubcommand("update", new UpdateCommand(bus));
     cmd.addSubcommand("delete", new DeleteCommand(bus));
-    // cmd.execute(args);
     return cmd;
   }
 }
